@@ -10,26 +10,26 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build renderer and main
+      - name: Build app
         run: |
           npm run build:ts
           npm run build:renderer
 
-      - name: Build macOS .dmg
+      - name: Package macOS app
         run: npx electron-builder --mac
 
-      - name: Upload .dmg as artifact
+      - name: Upload .dmg file
         uses: actions/upload-artifact@v3
         with:
           name: macos-installer
