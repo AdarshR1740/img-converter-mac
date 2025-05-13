@@ -1,0 +1,36 @@
+name: Build macOS App
+
+on:
+  push:
+    tags:
+      - 'v*'  # This runs only when you push a version tag like v1.0.0
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build renderer and main
+        run: |
+          npm run build:ts
+          npm run build:renderer
+
+      - name: Build macOS .dmg
+        run: npx electron-builder --mac
+
+      - name: Upload .dmg as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-installer
+          path: dist/*.dmg
